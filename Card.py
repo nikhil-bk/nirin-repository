@@ -7,7 +7,7 @@ Created on Fri Nov 16 14:24:23 2018
 """
 
 import random
-import copy
+
 
 class Card(object):
     """
