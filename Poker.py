@@ -7,6 +7,7 @@ Created on Tue Nov 20 16:25:20 2018
 """
 
 
+import random
 from PokerHand import ThreeCardPokerDeck, ThreeCardPokerHand
 from Card import Card
 
@@ -21,7 +22,22 @@ def make_dist(n):
     Returns a dictionary mapping the hand string labels to 
     float percentages.
     """
-    pass
+    hand_counts = {label: 0 for label in ThreeCardPokerHand.all_labels}
+
+    # Perform n trials
+    for _ in range(n):
+        # Generate a random Three-Card Poker hand
+        hand = ThreeCardPokerHand([random.choice(range(13)) for _ in range(3)])
+        
+        # Increment the count for the corresponding hand label
+        hand_counts[hand.get_label()] += 1
+
+    # Calculate probabilities based on counts
+    total_trials = float(n)
+    probabilities = {label: (count / total_trials) * 100 for label, count in hand_counts.items()}
+
+    return probabilities
+
 
 # A ThreeCardPokerHand object initialized with the 
 # smallest hand that can be played by the dealer. 
@@ -124,5 +140,5 @@ if __name__ == '__main__':
     
 #   This will play a single game of Three-Card Poker with the
 #   initial stake of 100, and a goal to turn it into 200.
-    play(1, 100, 200)
+    # play(1, 100, 200)
  
