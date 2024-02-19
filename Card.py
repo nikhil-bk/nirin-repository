@@ -7,7 +7,7 @@ Created on Fri Nov 16 14:24:23 2018
 """
 
 import random
-
+import copy
 
 class Card(object):
     """
@@ -68,8 +68,7 @@ class Deck(object):
         a = self.cards[-n:]
         del self.cards[-n:]
         return a
-    
-  
+      
     def add_cards(self, cards):
         """
         cards, a list of Card objects.
@@ -96,10 +95,9 @@ class Deck(object):
         Uses add_cards and pop_cards to 
         move n cards from self to hand
         """
-        self.add_cards(self.cards)
-        hand.cards = self.pop_cards(n)
-        
-        
+        a = self.pop_cards(n)
+        hand.add_cards(a)
+
     def __str__(self):
         lst = [str(card) for card in self.cards]
         return '\n'.join(lst)
@@ -134,7 +132,7 @@ if __name__ == '__main__':
     print()
     print(h)
     d.add_cards([Card(0, 0), Card(1, 1)])
-    print(d) 
+    print(d)
     print()
     d = Deck()
     h = Hand('Dealer')
