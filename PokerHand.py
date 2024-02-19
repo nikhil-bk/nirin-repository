@@ -62,40 +62,51 @@ class ThreeCardPokerHand(Hand):
         return len(set(self.ranks)) == 2
 
     def _compare(self, other):
-        if self.rank < other.rank:
-            return -1
-        elif self.rank > other.rank:
-            return 1
-
-        if self.rank in [3, 5]:
-            if self.ranks[0] > other.ranks[0]:
-                return -1
-            elif self.ranks[0] < other.ranks[0]:
+        """
+        Compare this hand with another hand according to the game rules.
+        Return -1 if other is winning, 0 if tied, and 1 if self is winning.
+        """
+        if self.rank != other.rank:
+            return 1 if self.rank > other.rank else -1
+        else:
+            # Same rank, use tie-breaking rules
+            if self.rank == 5:  # Straight Flush or Straight
+                # Compare the highest ranks of both hands
+                return 1 if self.ranks[0] > other.ranks[0] else -1 if self.ranks[0] < other.ranks[0] else 0
+            elif self.rank == 4:  # Three of a Kind
+                # Compare the rank of an arbitrary card in both hands
+                return 1 if self.ranks[0] > other.ranks[0] else -1
+            elif self.rank == 3:  # Straight
+                # Compare the highest ranks of both hands
+                return 1 if self.ranks[0] > other.ranks[0] else -1 if self.ranks[0] < other.ranks[0] else 0
+            elif self.rank == 2 or self.rank == 0:  # Flush or Nothing
+                # Compare the ranks in lexicographical order
+                return self._compare_lexicographical(other.ranks)
+            elif self.rank == 1:  # Pair
+                # Compare the ranks of the paired cards first
+                return 1 if self._compare_pairs(other.ranks) else 0
+    
+    
+    def _compare_lexicographical(self, other_ranks):
+        """
+        Compare ranks lexicographically.
+        Return 1 if self is winning, -1 if other is winning, and 0 if tied.
+        """
+        for self_rank, other_rank in zip(self.ranks, other_ranks):
+            if self_rank > other_rank:
                 return 1
-            else:
-                return 0
-        elif self.rank == 4:
-            return -1 if self.ranks[0] > other.ranks[0] else 1
-        elif self.rank in [0, 2]:
-            for self_rank, other_rank in zip(self.ranks, other.ranks):
-                if self_rank > other_rank:
-                    return -1
-                elif self_rank < other_rank:
-                    return 1
-            return 0
-        elif self.rank == 1:
-            if self.ranks[0] > other.ranks[0]:
+            elif self_rank < other_rank:
                 return -1
-            elif self.ranks[0] < other.ranks[0]:
-                return 1
-            else:
-                if self.ranks[1] > other.ranks[1]:
-                    return -1
-                elif self.ranks[1] < other.ranks[1]:
-                    return 1
-                else:
-                    return 0
-
+        return 0
+    def _compare_pairs(self, other_ranks):
+        """
+        Compare ranks of paired cards.
+        Return True if self is winning, False otherwise.
+        """
+        self_pair_rank = [rank for rank in set(self.ranks) if self.ranks.count(rank) == 2][0]
+        other_pair_rank = [rank for rank in set(other_ranks) if other_ranks.count(rank) == 2][0]
+        return self_pair_rank > other_pair_rank
+    
     def get_rank(self):
         return self.rank
 
@@ -111,13 +122,14 @@ class ThreeCardPokerHand(Hand):
         return True if self._compare(other) < 0 else False
 
     def __le__(self, other):
+        
         return True if self._compare(other) <= 0 else False
 
     def __gt__(self, other):
-        return True if self._compare(other) < 0 else False
+        return True if self._compare(other) > 0 else False
 
     def __ge__(self, other):
-        return True if self._compare(other) <= 0 else False
+        return True if self._compare(other) >= 0 else False
 
     def __eq__(self, other):
         return True if self._compare(other) == 0 else False
@@ -167,6 +179,8 @@ if __name__ == '__main__':
     hand2 = ThreeCardPokerHand([Card(12, 0), Card(0, 1), Card(0, 0)])
     print(hand2)
     print()
+
+    print("-------")
 
     print(hand1 < hand2)  # False
     print(hand1 > hand2)  # True

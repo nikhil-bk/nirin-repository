@@ -1,12 +1,5 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Nov 16 14:24:23 2018
-@author: uxac007
-"""
-
-import copy
 import random
+import copy
 
 class Card(object):
     """
@@ -24,9 +17,15 @@ class Card(object):
     def get_rank(self):
         return self.rank
 
+    #   Question 1
     def get_suit(self):
+        """
+        Returns the value of the
+        suit attribute
+        """
         return self.suit
 
+#   add __str__
     def __str__(self):
         return Card.ranks[self.rank] + ' of ' + Card.suits[self.suit]
 
@@ -41,23 +40,57 @@ class Deck(object):
             for suit in range(len(Card.suits)):
                 self.cards.append(Card(rank, suit))
 
+    #   Question 1     
     def shuffle(self):
+        """
+        Use the random.shuffle method
+        to randomly shuffle the list of cards.
+        """
         random.shuffle(self.cards)
 
+    #   Question 1 
     def pop_cards(self, n):
+        """
+        n, positive integer.
+        Returns a list of n Card objects 
+        at the end of self.cards, and 
+        removes the returned cards from 
+        self.cards.
+        """
         a = self.cards[-n:]
         del self.cards[-n:]
         return a
 
+
     def add_cards(self, cards):
+        """
+        cards, a list of Card objects.
+        Extends self.cards with a
+        deep copy of the cards parameter.
+        Use the copy.deepcopy() method of 
+        the Python's copy library.
+        """
         self.cards.extend(cards.copy())
 
+    #   Question 1 
     def clear_cards(self):
+        """
+        Clears the content of self.cards. Be
+        careful to NOT remove the entire attribute!
+        """
         self.cards.clear()
 
+    #   Question 1 
     def move_cards(self, hand, n):
+        """
+        hand, a Hand object
+        n, a positive integer
+        Uses add_cards and pop_cards to 
+        move n cards from self to hand
+        """
         self.add_cards(self.cards)
         hand.cards = self.pop_cards(n)
+
 
     def __str__(self):
         lst = [str(card) for card in self.cards]
@@ -72,12 +105,16 @@ class Hand(Deck):
         self.cards = []
         self.name = name
 
+    #   Question 1 
     def get_name(self):
+        """
+        Return the value of the 
+        name attribute
+        """
         return self.name
 
     def __str__(self):
         return self.name + "'s Hand:\n" + Deck.__str__(self)
-
 
 if __name__ == '__main__':    
     d = Deck()
