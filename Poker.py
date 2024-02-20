@@ -24,17 +24,22 @@ def make_dist(n):
     """
     hand_counts = {label: 0 for label in ThreeCardPokerHand.all_labels}
 
-    # Perform n trials
-    for _ in range(n):
-        # Generate a random Three-Card Poker hand
-        hand = ThreeCardPokerHand([random.choice(range(13)) for _ in range(3)])
-        
-        # Increment the count for the corresponding hand label
-        hand_counts[hand.get_label()] += 1
+    # Perform Monte Carlo simulation
 
-    # Calculate probabilities based on counts
-    total_trials = float(n)
-    probabilities = {label: (count / total_trials) * 100 for label, count in hand_counts.items()}
+    for _ in range(n):
+        # Create a Three-Card Poker deck and shuffle it
+        deck = ThreeCardPokerDeck()
+        deck.shuffle()
+
+        # Deal a Three-Card Poker hand
+        hand = ThreeCardPokerHand(deck.pop_cards(3))
+
+        # Get the label for the hand and update the counts
+        label = hand.get_label()
+        hand_counts[label] += 1
+
+    # Calculate probabilities from counts
+    probabilities = {label: round(count / n * 100,2) for label, count in hand_counts.items()}
 
     return probabilities
 
@@ -66,7 +71,31 @@ def play_round(dealer_hand, player_hand, cash, get_ante, is_playing):
     1 if the dealer does not qualify, and the player plays
     2 if the dealer qualifies, the player plays and wins,
     """
-    pass
+    ante = get_ante(cash)
+
+    # Check if the player wants to play or fold
+    if not is_playing(player_hand):
+        return ante, -1  # Player folds
+
+    # Minimum dealer hand to qualify for playing
+    min_dealer_hand = ThreeCardPokerHand([Card("Queen", "Hearts"), Card("5", "Clubs"), Card("2", "Spades")])  # Example hand, adjust as needed
+
+    # Compare dealer's hand against the minimum playing hand
+    dealer_qualifies = dealer_hand._compare(min_dealer_hand) >= 0
+
+    if not dealer_qualifies:
+        return ante, 1  # Player plays, dealer does not qualify
+
+    # Dealer qualifies, compare player's hand against the dealer's
+    comparison_result = player_hand._compare(dealer_hand)
+
+    if comparison_result > 0:
+        return ante, 2  # Player plays, dealer qualifies, player wins
+    elif comparison_result < 0:
+        return ante, -2  # Player plays, dealer qualifies, player loses
+    else:
+        return ante, 0  
+    # Player plays, dealer qualifies, it's a tie
 
     
 def get_ante(cash):
@@ -140,5 +169,5 @@ if __name__ == '__main__':
     
 #   This will play a single game of Three-Card Poker with the
 #   initial stake of 100, and a goal to turn it into 200.
-    # play(1, 100, 200)
+    play(1, 100, 200)
  
