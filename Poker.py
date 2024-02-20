@@ -52,73 +52,45 @@ min_dealer_hand = ThreeCardPokerHand([Card(10, 0), Card(1, 1), Card(0, 2)])
 
 # Question 5
 def play_round(dealer_hand, player_hand, cash, get_ante, is_playing):
-    """
-    dealer_hand, an instance of ThreeCardPokerHand holding the
-    hand dealt to the dealer at the beginning of the round
-    player_hand, an instance of ThreeCardPokerHand holding the
-    hand dealt to the dealer at the beginning of the round
-    cash, a positive integer, the amount of cash available to the 
-    player at the beginning of the round
-    get_ante, a function, takes cash as argument and returns 
-    the player's ante bet
-    is_playing, a function, takes the player's hand as argument
-    and returns True if the player plays, and False if the player folds.
-    Returns: tuple (ante, outcome), ante is the ante bet
-    returned by get_ante, and outcome is  
-    -2 if the dealer qualifies, the player plays and loses,
-    -1 if the player folds
-    0 if the dealer qualifies, the player plays, and the hands tie up
-    1 if the dealer does not qualify, and the player plays
-    2 if the dealer qualifies, the player plays and wins,
-    """
+
     ante = get_ante(cash)
 
-    # Check if the player wants to play or fold
+
     if not is_playing(player_hand):
         return ante, -1  # Player folds
 
-    # Minimum dealer hand to qualify for playing
+
     min_dealer_hand = ThreeCardPokerHand([Card("Queen", "Hearts"), Card("5", "Clubs"), Card("2", "Spades")])  # Example hand, adjust as needed
 
-    # Compare dealer's hand against the minimum playing hand
+
     dealer_qualifies = dealer_hand._compare(min_dealer_hand) >= 0
 
     if not dealer_qualifies:
-        return ante, 1  # Player plays, dealer does not qualify
+        return ante, 1  
 
-    # Dealer qualifies, compare player's hand against the dealer's
+   
     comparison_result = player_hand._compare(dealer_hand)
 
     if comparison_result > 0:
-        return ante, 2  # Player plays, dealer qualifies, player wins
+        return ante, 2  
     elif comparison_result < 0:
-        return ante, -2  # Player plays, dealer qualifies, player loses
+        return ante, -2  
     else:
         return ante, 0  
-    # Player plays, dealer qualifies, it's a tie
+    
 
     
 def get_ante(cash):
-    """
-    A sample get_ante function.
-    Feel free to customize as needed
-    """
+
     return int(input('Enter your ante bet (Cash=' + str(cash) + '): '))
     
 def is_playing(player_hand):
-    """
-    A sample is_playing function.
-    Feel free to customize as needed.
-    """
+
     print(player_hand)
     return True if input("Play or fold  (p/f): ") == 'p' else False
 
 def proc_outcome(outcome, ante, dealer_hand):
-    """
-    A sample function to process the outcome
-    of the round. 
-    Feel free to customize as needed.
-    """
+
     out = ['Tie', 'Dealer does not qualify', 'You won', 'You lost', 'You folded']
     payoff = outcome * ante
     print(dealer_hand)
@@ -126,16 +98,7 @@ def proc_outcome(outcome, ante, dealer_hand):
     return payoff
 
 def play(trials, stake, goal):
-    """
-    trials, positive integer, the number of trial game runs
-    stake, positive integer, the initial amount of cash available to the player
-    goal, the amount of cash the player is hoping to have by the end of each trial game
-    Runs the trials number of trial games of Three-Hand Poker. Each trial run
-    proceeds as long as the amount of cash available to the player is 
-    both positive and below the goal. Each round is implemented by 
-    calling the play_round() function below. 
-    Prints various stats upon termination.
-    """
+
     wins, gain, rounds, win_rounds, tie_rounds, lose_rounds = 0, 0, 0, 0, 0, 0
     for _ in range(trials):
         cash = stake

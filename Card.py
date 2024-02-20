@@ -19,10 +19,7 @@ class Card(object):
 
     #   Question 1
     def get_suit(self):
-        """
-        Returns the value of the
-        suit attribute
-        """
+
         return self.suit
 
 #   add __str__
@@ -30,9 +27,7 @@ class Card(object):
         return Card.ranks[self.rank] + ' of ' + Card.suits[self.suit]
 
 class Deck(object):
-    """
-    A standard deck of 52 cards
-    """
+
 
     def __init__(self):
         self.cards = []
