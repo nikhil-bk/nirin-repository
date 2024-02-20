@@ -31,15 +31,15 @@ class ThreeCardPokerHand(Hand):
     def _compute_rank(self):
         self.ranks.sort(reverse=True)
         if self.isStraightFlush():
-            self.rank = 5  # Straight Flush
+            self.rank = 5  
         elif self.isThreeOfKind():
-            self.rank = 4  # Three of a Kind
+            self.rank = 4  
         elif self.isStraight():
-            self.rank = 3  # Straight
+            self.rank = 3  
         elif self.isFlush():
-            self.rank = 2  # Flush
+            self.rank = 2  
         elif self.isPair():
-            self.rank = 1  # Pair
+            self.rank = 1  
         else:
             self.rank = 0  # Nothing
         return self.rank
